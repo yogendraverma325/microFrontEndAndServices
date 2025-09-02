@@ -1,0 +1,38 @@
+# Node modules (ignore all services ka node_modules)
+**/node_modules
+**/.npm
+**/.pnp
+**/.pnp.js
+
+# Build outputs (agar har service build hoti hai to)
+**/dist
+**/build
+**/coverage
+
+# Logs
+**/logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files (har service ke alag env files honge)
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
+
+# Temporary
+*.tmp
+*.swp
+*.swo
