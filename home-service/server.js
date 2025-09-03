@@ -28,11 +28,6 @@ const standardMiddleware = (app) => {
   app.set("views", path.join(__dirname, "src", "views"));
   app.set("view engine", "ejs");
   app.use(express.static(path.join(process.cwd(), '/src/public')));
-  app.use(async (req, res, next) => {
-    res.locals.user = null;
-    res.locals.cartList = []
-    next();
-  });
 }
 const dataMiddleware = (app) => {
   app.use(async (req, res, next) => {
