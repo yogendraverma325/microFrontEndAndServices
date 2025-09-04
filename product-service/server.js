@@ -3,8 +3,8 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import "dotenv/config.js";
 import {connectionWithDB} from "./src/config/db.js";
-import { productRoutes } from './src/api/routes/product.js';
-import { ProduceHotProducts } from './src/kafka/product.producer.js';
+import {productUiroutes } from './src/api/routes/product.js';
+import { ProduceProducts } from './src/kafka/product.producer.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.APP_PORT;
@@ -40,20 +40,7 @@ const secutiryMiddleware = (app) => {
 
 }
 const routeMiddleware = (app) => {
-  const products = [
-    { id: 1, name: "Laptop", price: 500 },
-    { id: 2, name: "Mobile", price: 200 }
-  ];
-  app.use('/api', productRoutes());
-  app.get("/list", (req, res) => {
-    res.render("list", { products });
-  });
-  
-  app.get("/detail/:id", (req, res) => {
-    const product = products.find(p => p.id == req.params.id);
-    res.render("detail", { product });
-  });
-
+  app.use('', productUiroutes());
 }
 
 const startServer = (app) => {
@@ -62,7 +49,7 @@ const startServer = (app) => {
   });
 }
 const startConsumeAndProducer = async () => {
-await ProduceHotProducts();
+//await ProduceProducts();
 }
 
 initilize();

@@ -3,9 +3,9 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import "dotenv/config.js";
 import {connectionWithDB} from "./src/config/db.js";
-import {categoryService} from "./src/api/services/categoryService.js";
-import {thirdpartyservice} from "./src/api/services/thirdparty.js";
-import { consumeHotProducts } from './src/kafka/home.consumer.js';
+import { consumeMessage } from './src/kafka/home.consumer.js';
+import redisClient from './src/redis/redisClient.js'
+import { Uiroutes } from './src/api/routes/home.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +24,7 @@ const start = (app) => {
   dataMiddleware(app);
   routeMiddleware(app);
   startConsumeAndProducer(); // adding consumer and producer function call
+  connectWithRedis(); // connect with redis
   startServer(app);
 }
 const standardMiddleware = (app) => {
@@ -42,29 +43,7 @@ const secutiryMiddleware = (app) => {
 
 }
 const routeMiddleware = (app) => {
-  app.get("/header", (req, res) => {
-    res.render("header");
-  });
-
-  app.get("/footer", (req, res) => {
-    res.render("footer");
-  });
-
-  app.get("/home",async (req, res) => {
-      let categories = await categoryService.returnCategories();
-      let hotdata=await thirdpartyservice.gethotProducts();
-      let newdata=await thirdpartyservice.getnewArrivals();
-    let hotProducts = hotdata.data;
-    let newArrivals = newdata.data;
-    res.render("home", {
-      categories,
-      hotProducts,
-      newArrivals
-    });
-  });
-  app.get("/contact", (req, res) => {
-    res.render("contact");
-  });
+  app.use('/', Uiroutes());
 }
 
 const startServer = (app) => {
@@ -74,7 +53,10 @@ const startServer = (app) => {
 }
 
 const startConsumeAndProducer = async () => {
-await consumeHotProducts()
+await consumeMessage()
+}
+const connectWithRedis=async()=>{
+  await redisClient.connect();
 }
 
 initilize();

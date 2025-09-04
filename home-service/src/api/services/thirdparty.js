@@ -1,13 +1,18 @@
-import axios from 'axios';
+import redisClient from "../../redis/redisClient.js";
 class ThirdPartyService {
-  apiUrl = process.env.PRODUCT_SERVICE_URL;;
   async gethotProducts() {
-    const response = await axios.get(`${this.apiUrl}/api/products/hot`);
-    return response.data;
+    const cachedData = await redisClient.get("hotProducts");
+    if (cachedData) {
+      return cachedData;
+    }
+    return []
   }
   async getnewArrivals() {
-    const response = await axios.get(`${this.apiUrl}/api/products/new`);
-    return response.data;
+    const cachedData = await redisClient.get("newArrivals");
+    if (cachedData) {
+      return cachedData;
+    }
+    return []
   }
 }
 export const thirdpartyservice = new ThirdPartyService(); 

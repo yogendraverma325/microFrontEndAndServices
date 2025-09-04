@@ -3,11 +3,11 @@ import express from 'express';
 
 
 const router = express.Router();
-const  routes=() =>{
-    console.log("Product routes initialized");
-router.get('/products/hot', ProductController.gethotProducts);
-router.get('/products/new', ProductController.getnewArrivals);
+
+const  Uiroutes=() =>{
+router.get('/detail/:id', ProductController.details);
+router.get('/list', ProductController.list);
 return router;
 }
 
-export {routes as productRoutes};
+export {Uiroutes as productUiroutes};

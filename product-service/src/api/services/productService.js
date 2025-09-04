@@ -44,5 +44,26 @@ async newArrivals() {
     });
     return newArrivals;
 }
+async productDetails(productId) {   
+    let productDetails = await this.db.product.findOne({
+		attributes: ["productAutoId", "name", "image","price","offerprice","description"],
+		where: {
+			productAutoId: productId,
+			isActive: 1
+		}
+	});
+	return productDetails;
+}
+async productList(filters) {  
+console.log("filters",filters); 
+    let list = await this.db.product.findOne({
+		attributes: ["productAutoId", "name", "image","price","offerprice","description"],
+		where: {
+			isActive: 1
+		},
+        limit:1
+	});
+	return list;
+}
 }
 export const productservice = new productService(); 
