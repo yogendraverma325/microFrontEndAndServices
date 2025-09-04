@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import "dotenv/config.js";
 import {connectionWithDB} from "./src/config/db.js";
 import { productRoutes } from './src/api/routes/product.js';
-
+import { ProduceHotProducts } from './src/kafka/product.producer.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.APP_PORT;
@@ -21,6 +21,7 @@ const start = (app) => {
   secutiryMiddleware(app);
   dataMiddleware(app);
   routeMiddleware(app);
+  startConsumeAndProducer(); // adding consumer and producer function call
   startServer(app);
 }
 const standardMiddleware = (app) => {
@@ -59,6 +60,9 @@ const startServer = (app) => {
   app.listen(PORT, () => {
     console.log(`Prodcut service running on http://localhost:${PORT}`);
   });
+}
+const startConsumeAndProducer = async () => {
+await ProduceHotProducts();
 }
 
 initilize();

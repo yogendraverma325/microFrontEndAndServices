@@ -5,6 +5,7 @@ import "dotenv/config.js";
 import {connectionWithDB} from "./src/config/db.js";
 import {categoryService} from "./src/api/services/categoryService.js";
 import {thirdpartyservice} from "./src/api/services/thirdparty.js";
+import { consumeHotProducts } from './src/kafka/home.consumer.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,6 +23,7 @@ const start = (app) => {
   secutiryMiddleware(app);
   dataMiddleware(app);
   routeMiddleware(app);
+  startConsumeAndProducer(); // adding consumer and producer function call
   startServer(app);
 }
 const standardMiddleware = (app) => {
@@ -69,6 +71,10 @@ const startServer = (app) => {
   app.listen(PORT, () => {
     console.log(`Home service running on http://localhost:${PORT}`);
   });
+}
+
+const startConsumeAndProducer = async () => {
+await consumeHotProducts()
 }
 
 initilize();
