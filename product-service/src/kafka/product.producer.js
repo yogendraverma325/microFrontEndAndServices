@@ -5,6 +5,7 @@ const producer = kafka.producer();
 const ProduceProducts = async () => {
     let hotProductsdata=await productservice.hotProducts();
     let newArrivalsdata=await productservice.newArrivals();
+    console.log("hotProductsdata",hotProductsdata);
     await producer.connect();
     await producer.send({
       topic: process.env.HOT_PRODUCTS_TOPIC,
