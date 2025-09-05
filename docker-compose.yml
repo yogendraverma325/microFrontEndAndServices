@@ -1,6 +1,62 @@
 version: '3.8'
 
 services:
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "3002:3002"
+    environment:
+      - PRODUCT_SERVICE_URL=http://product-service:4002
+      - HOME_SERVICE_URL=http://home-service:4001
+    volumes:
+        - ./api-gateway:/app
+        - /app/node_modules
+    depends_on:
+      - product-service
+      - home-service
+  
+  home-service:
+      build: ./home-service
+      container_name: home-service
+      ports:
+        - "4001:4001"
+      environment:
+        - DB_NAME=kidsgamingzone
+        - DB_USER=root
+        - DB_PASSWORD=Yogi@1234
+        - DB_HOST=host.docker.internal 
+        - REDIS_HOST=redis
+        - REDIS_PORT=6379
+        - REDIS_PASSWORD=
+        - KAFKA_URL=kafka:9092
+      volumes:
+        - ./home-service:/app
+        - /app/node_modules
+      depends_on:
+        - kafka
+        - redis
+  product-service:
+      build: ./product-service
+      container_name: product-service
+      ports:
+        - "4002:4002"
+      environment:
+        - DB_NAME=kidsgamingzone
+        - DB_USER=root
+        - DB_PASSWORD=Yogi@1234
+        - DB_HOST=host.docker.internal
+        - KAFKA_URL=kafka:9092 
+      volumes:
+        - ./product-service:/app
+        - /app/node_modules
+      depends_on:
+        - kafka
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
   kafka:
     image: bitnami/kafka:3.5.1
     container_name: kafka
@@ -10,7 +66,7 @@ services:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=broker,controller
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@localhost:9093
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT

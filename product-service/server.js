@@ -49,7 +49,7 @@ const startServer = (app) => {
   });
 }
 const startConsumeAndProducer = async () => {
-//await ProduceProducts();
+await ProduceProducts();
 }
 
 initilize();
