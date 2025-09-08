@@ -1,5 +1,6 @@
 
 import axios from 'axios';
+import {genericStore} from '../service/generic.js';
 let cachedHeader = "";
 let cachedFooter = "";
 async function fetchView(url) {
@@ -16,33 +17,61 @@ async function loadCommonViews() {
 }
 
 const home =async (req,res) => {
+  let content=''
+    try {
     await loadCommonViews();
-    const content = await fetchView(`${process.env.HOME_SERVICE_URL}/home`);
-    res.render("layout", { cachedHeader, content, cachedFooter,"title"  :"Home Page","description":"This is the home page description" });
+    content = await fetchView(`${process.env.HOME_SERVICE_URL}/home`);
+    }  catch (error) {
+    content = '<p>Home service is currently unavailable.</p>';
+    }
+res.render("layout", { cachedHeader, content, cachedFooter,"title"  :"Home Page","description":"This is the home page description" });
+
 }
 
 const contact =async (req,res) => {
+  let content=''
+  try {
     await loadCommonViews();
-    const content = await fetchView(`${process.env.HOME_SERVICE_URL}/contact`);
-    res.render("layout", { cachedHeader, content, cachedFooter ,"title"  :"Contact Page","description":"This is the contact page description"});
+     content = await fetchView(`${process.env.HOME_SERVICE_URL}/contact`);
+  }  catch (error) {
+    content = '<p>Home service is currently unavailable.</p>';
+  }
+  res.render("layout", { cachedHeader, content, cachedFooter ,"title"  :"Contact Page","description":"This is the contact page description"});
 }
 
 const products =async (req,res) => {
     let filters = req.query || {};
+    let content =''
+    try {
     await loadCommonViews();
-    const content = await fetchView(`${process.env.PRODUCT_SERVICE_URL}/list?`+new URLSearchParams(filters).toString());
-    res.render("layout", { cachedHeader, content, cachedFooter , "title"  :"Products Page","description":"This is the products page description"});
+      content = await fetchView(`${process.env.PRODUCT_SERVICE_URL}/list?`+new URLSearchParams(filters).toString());
+      }  catch (error) {
+        content = '<p>Home service is currently unavailable.</p>';
+      }
+      res.render("layout", { cachedHeader, content, cachedFooter , "title"  :"Products Page","description":"This is the products page description"});
  
 }
 const productdetails =async (req,res) => {
+  let content=''
+  try {
+  console.log("Product ID:", req.params.id); // Log the product ID
     await loadCommonViews();
-    const content = await fetchView(`${process.env.PRODUCT_SERVICE_URL}/detail/${req.params.id}`);
-    res.render("layout", { cachedHeader, content, cachedFooter, "title"  :"Product Detail Page","description":"This is the product detail page description"});
+    content = await fetchView(`${process.env.PRODUCT_SERVICE_URL}/detail/${req.params.id}`);
+   
+  }  catch (error) {
+    content = '<p>Home service is currently unavailable.</p>';
+  }
+  res.render("layout", { cachedHeader, content, cachedFooter, "title"  :"Product Detail Page","description":"This is the product detail page description"});
 }
+const addToCart = async (req, res) => {
+  console.log("Request Body is:", req.body,genericStore.get('cart')); // Log the request body
+}
+
 const GatewayController = {
 home,
 contact,
 products,
-productdetails
+productdetails,
+addToCart
 };
 export default GatewayController;

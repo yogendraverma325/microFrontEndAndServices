@@ -8,6 +8,7 @@ router.get('/', GatewayController.home);
 router.get('/contact', GatewayController.contact);
 router.get('/products', GatewayController.products);
 router.get('/product-details/:id', GatewayController.productdetails);
+router.post('/addToCart', GatewayController.addToCart);
 return router;
 }
 

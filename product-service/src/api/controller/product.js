@@ -20,6 +20,7 @@ productList
 });
 }
 
+
 const ProductController = {
   details,
   list

@@ -17,4 +17,4 @@ const ProduceProducts = async () => {
     });
     await producer.disconnect();
 }
-export { ProduceProducts };
+export { ProduceProducts,kafka };

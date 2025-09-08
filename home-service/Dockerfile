@@ -1,22 +1,28 @@
-# Use the official Node.js image as the base image
-FROM node:18.17.0
+# Use Node.js 18 Alpine as base image
+FROM node:18-alpine
 
-# Set the working directory in the container
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
+# Copy wait-for-it script and make it executable
+COPY wait-for-it.sh /app/wait-for-it.sh
+RUN chmod 755 /app/wait-for-it.sh
+
+# Copy start script and make it executable
+COPY start.sh /app/start.sh
+RUN chmod 755 /app/start.sh
+
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install project dependencies
+# Install dependencies
 RUN npm install
 
-# Copy the rest of the application code to the working directory
+# Copy the rest of the application code
 COPY . .
 
-# Expose the port on which your Node.js app will run
+# Expose application port
 EXPOSE 4001
 
-# Environment variables for connecting to MySQL
-
-# Command to start your Node.js application
-CMD ["npm", "start"]
+# Command to run when container starts
+CMD ["sh", "/app/start.sh"]
