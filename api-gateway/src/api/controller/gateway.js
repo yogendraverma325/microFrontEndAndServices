@@ -65,6 +65,11 @@ const productdetails =async (req,res) => {
 }
 const addToCart = async (req, res) => {
   console.log("Request Body is:", req.body,genericStore.get('cart')); // Log the request body
+  const backURL = req.get('referer') || '/'; // fallback to home page if referer is missing
+  req.flash('message', JSON.stringify({ type: 'success', text: 'Item added!' }));
+  //req.flash('message', JSON.stringify({ type: 'error', text: 'Failed to add item to cart!' }));
+  res.redirect(backURL);
+ 
 }
 
 const GatewayController = {
