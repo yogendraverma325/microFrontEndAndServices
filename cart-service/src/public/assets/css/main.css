@@ -8176,13 +8176,3 @@ blockquote span {
 .user-menu:hover .dropdown-menu {
   display: block;
 }
-.flash-message {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  padding: 15px 20px;
-  border-radius: 5px;
-  color: white;
-  z-index: 9999;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}

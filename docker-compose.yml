@@ -9,12 +9,14 @@ services:
     environment:
       - PRODUCT_SERVICE_URL=http://product-service:4002
       - HOME_SERVICE_URL=http://home-service:4001
+      - KAFKA_URL=kafka:9092 
     volumes:
         - ./api-gateway:/app
         - /app/node_modules
     depends_on:
       - product-service
       - home-service
+      - kafka
   
   home-service:
       build: ./home-service
@@ -32,6 +34,24 @@ services:
         - KAFKA_URL=kafka:9092
       volumes:
         - ./home-service:/app
+        - /app/node_modules
+      depends_on:
+        - kafka
+        - redis
+
+  cart-service:
+      build: ./cart-service
+      container_name: cart-service
+      ports:
+        - "4003:4003"
+      environment:
+        - DB_NAME=kidsgamingzone
+        - DB_USER=root
+        - DB_PASSWORD=Yogi@1234
+        - DB_HOST=host.docker.internal
+        - KAFKA_URL=kafka:9092 
+      volumes:
+        - ./cart-service:/app
         - /app/node_modules
       depends_on:
         - kafka

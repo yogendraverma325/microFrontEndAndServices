@@ -36,20 +36,19 @@
     <![endif]-->
 
     <!-- Preloader -->
-    <div class="preloader">
-        <div class="preloader-inner">
-            <div class="preloader-icon">
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </div>
+    
     <!-- /End Preloader -->
 
     <!-- Start Header Area -->
     <%- cachedHeader %>
     <!-- End Header Area -->
-
+    <% if (flashMessage.length > 0) { 
+        const msg = JSON.parse(flashMessage[0]);
+   %>
+   <div class="flash-message" style="background-color: <%= msg.type === 'success' ? 'green' : 'red' %>;">
+    <%= msg.text %>
+</div>
+   <% } %>
     <%- content %>  <!-- Content inject hoga yahan -->
 
     <!-- Start Footer Area -->

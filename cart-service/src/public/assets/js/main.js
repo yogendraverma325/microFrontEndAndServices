@@ -41,15 +41,6 @@ Author: GrayGrids
     window.onload = function () {
         window.setTimeout(fadeout, 500);
     }
-    //hide flash messages
-    setTimeout(() => {
-      const flashDiv = document.querySelector('.flash-message');
-      if (flashDiv) {
-        flashDiv.style.animation = 'fadeOut 0.5s forwards';
-        setTimeout(() => flashDiv.remove(), 500);  // Remove after animation ends
-      }
-    }, 3000);  // Wait 3 seconds before fading out
-     //hide flash messages
 
     function fadeout() {
         document.querySelector('.preloader').style.opacity = '0';

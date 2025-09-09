@@ -1,11 +1,14 @@
 import { Kafka } from "kafkajs";
 import {productservice} from "../api/services/productService.js";
-const kafka = new Kafka({ brokers: [process.env.KAFKA_URL]});
-const producer = kafka.producer();
+let kafka = null;
+const connectKafaka= async () => {
+  kafka = new Kafka({ brokers: [process.env.KAFKA_URL]});;
+}
+
 const ProduceProducts = async () => {
+  const producer = kafka.producer();
     let hotProductsdata=await productservice.hotProducts();
     let newArrivalsdata=await productservice.newArrivals();
-    console.log("hotProductsdata",hotProductsdata);
     await producer.connect();
     await producer.send({
       topic: process.env.HOT_PRODUCTS_TOPIC,
@@ -17,4 +20,4 @@ const ProduceProducts = async () => {
     });
     await producer.disconnect();
 }
-export { ProduceProducts,kafka };
+export { ProduceProducts,kafka,connectKafaka };

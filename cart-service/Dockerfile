@@ -22,7 +22,7 @@ RUN npm install
 COPY . .
 
 # Expose application port
-EXPOSE 3002
+EXPOSE 4003
 
 # Command to run when container starts
 CMD ["sh", "/app/start.sh"]

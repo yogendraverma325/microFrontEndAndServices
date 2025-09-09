@@ -3,8 +3,9 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import "dotenv/config.js";
 import {connectionWithDB} from "./src/config/db.js";
-import {productUiroutes } from './src/api/routes/product.js';
-import {connectKafaka, ProduceProducts } from './src/kafka/product.producer.js';
+import {appUiroutes } from './src/api/routes/route.js';
+import {connectKafaka } from './src/kafka/producer.js';
+import {consumeMessage} from "./src/kafka/consumer.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.APP_PORT;
@@ -40,17 +41,17 @@ const secutiryMiddleware = (app) => {
 
 }
 const routeMiddleware = (app) => {
-  app.use('', productUiroutes());
+  app.use('', appUiroutes());
 }
 
 const startServer = (app) => {
   app.listen(PORT, () => {
-    console.log(`Prodcut service running on http://localhost:${PORT}`);
+    console.log(`cart service running on http://localhost:${PORT}`);
   });
 }
 const startConsumeAndProducer = async () => {
   await connectKafaka();
-  await ProduceProducts();
+  await consumeMessage();
 }
 
 initilize();

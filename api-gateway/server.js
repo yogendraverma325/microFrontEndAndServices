@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import flash from 'connect-flash';
 import {genericStore} from './src/api/service/generic.js';
-
+import {connectKafaka} from "./src/kafka/gateway-producer.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.APP_PORT;
@@ -23,6 +23,7 @@ const start = (app) => {
   secutiryMiddleware(app);
   dataMiddleware(app);
   routeMiddleware(app);
+  startKafka();
   startServer(app);
 }
 const standardMiddleware = (app) => {
@@ -49,7 +50,9 @@ const dataMiddleware = (app) => {
     if(req.cookies?.userCart){
       genericStore.set("cart",'UserCart', req.cookies.userCart);
     }
-    res.locals.message = req.flash('message')[0] || null;
+    let flashData =req.flash('message') || null;
+    res.locals.flashMessage =flashData
+    console.log( "data ",flashData)
     res.locals.user = null;
     res.locals.cartList = [];
     next();
@@ -61,11 +64,13 @@ const secutiryMiddleware = (app) => {
 const routeMiddleware = (app) => {
   app.use('/', Uiroutes());
 }
-
 const startServer = (app) => {
   app.listen(PORT, () => {
     console.log(`API service running on change http://localhost:${PORT}`);
   });
+}
+const startKafka = async () => {
+  await connectKafaka();
 }
 
 initilize();
