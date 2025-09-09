@@ -1,7 +1,8 @@
 
 import axios from 'axios';
 import {genericStore} from '../service/generic.js';
-import {sendDataToCart} from "../../kafka/gateway-producer.js";
+
+import {cart} from "../service/cart.js";
 let cachedHeader = "";
 let cachedFooter = "";
 async function fetchView(url) {
@@ -71,7 +72,7 @@ const addToCart = async (req, res) => {
   let METHOD='ADD'
   const backURL = req.get('referer') || '/'; // fallback to home page if referer is missing
   req.flash('message', JSON.stringify({ type: 'success', text: 'Item added!' }));
-  await sendDataToCart(CART_ID,PRODUCT_ID,METHOD,QTY);
+ await cart.addToCart({ CART_ID, PRODUCT_ID, METHOD, QTY });
   //error, success
   //req.flash('message', JSON.stringify({ type: 'error', text: 'Failed to add item to cart!' }));
   res.redirect(backURL);

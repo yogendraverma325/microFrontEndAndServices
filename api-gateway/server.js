@@ -8,6 +8,8 @@ import session from 'express-session';
 import flash from 'connect-flash';
 import {genericStore} from './src/api/service/generic.js';
 import {connectKafaka} from "./src/kafka/gateway-producer.js";
+import { getSocketServer } from "./src/websocket/socketServer.js";
+import http from "http";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.APP_PORT;
@@ -65,12 +67,15 @@ const routeMiddleware = (app) => {
   app.use('/', Uiroutes());
 }
 const startServer = (app) => {
-  app.listen(PORT, () => {
-    console.log(`API service running on change http://localhost:${PORT}`);
+    const server = http.createServer(app);
+    const socketServer =  getSocketServer(server);
+    socketServer.init();
+    server.listen(PORT, () => {
+    console.log(`API Gateway service running on change http://localhost:${PORT}`);
   });
 }
 const startKafka = async () => {
-  await connectKafaka();
+  //await connectKafaka();
 }
 
 initilize();

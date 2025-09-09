@@ -50,6 +50,7 @@ services:
         - DB_PASSWORD=Yogi@1234
         - DB_HOST=host.docker.internal
         - KAFKA_URL=kafka:9092 
+        - WEB_SOCKET_URL=http://api-gateway:3002
       volumes:
         - ./cart-service:/app
         - /app/node_modules

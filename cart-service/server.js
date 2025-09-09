@@ -6,6 +6,7 @@ import {connectionWithDB} from "./src/config/db.js";
 import {appUiroutes } from './src/api/routes/route.js';
 import {connectKafaka } from './src/kafka/producer.js';
 import {consumeMessage} from "./src/kafka/consumer.js";
+import {consumeDataSocket} from "./src/websocket/consumer.js"
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.APP_PORT;
@@ -50,8 +51,9 @@ const startServer = (app) => {
   });
 }
 const startConsumeAndProducer = async () => {
-  await connectKafaka();
-  await consumeMessage();
+  consumeDataSocket();
+ // await connectKafaka();
+  //await consumeMessage();
 }
 
 initilize();

@@ -7,7 +7,6 @@ import { returnDBConnection } from "../../config/db.js";
 
     async addToCart(data) {
          // data keys CART_ID, PRODUCT_ID,  METHOD, QTY
-         console.log("data.CART_ID",data.CART_ID,"data.PRODUCT_ID",data.PRODUCT_ID);
         if(data.CART_ID && data.PRODUCT_ID){
             let isAlreadyInCart = await this.db.cart.findOne({
                 where: {
@@ -21,11 +20,12 @@ import { returnDBConnection } from "../../config/db.js";
                         productAutoId: data.PRODUCT_ID,
                         qty: 1
                     });
+                    return 1
                 }else{
                     await isAlreadyInCart.increment('qty', { by: 1 });
+                    return 1;
                 }
         }
-    console.log("data in app to cart service",data);
     }
 
 }

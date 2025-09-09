@@ -1,0 +1,10 @@
+npm i dotenv
+npm i sequelize
+npm i mysql2
+npm i axios
+npm install kafkajs
+npm install socket.io socket.io-client
+npm install connect-flash
+npm install  cookie-parser
+npm install  express-session
+
