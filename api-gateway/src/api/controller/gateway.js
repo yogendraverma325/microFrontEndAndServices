@@ -56,7 +56,7 @@ const products =async (req,res) => {
 const productdetails =async (req,res) => {
   let content=''
   try {
-  console.log("Product ID:", req.params.id); // Log the product ID
+  //console.log("Product ID:", req.params.id); // Log the product ID
     await loadCommonViews();
     content = await fetchView(`${process.env.PRODUCT_SERVICE_URL}/detail/${req.params.id}`);
    
@@ -72,9 +72,9 @@ const addToCart = async (req, res) => {
   let METHOD='ADD'
   const backURL = req.get('referer') || '/'; // fallback to home page if referer is missing
   req.flash('message', JSON.stringify({ type: 'success', text: 'Item added!' }));
- await cart.addToCart({ CART_ID, PRODUCT_ID, METHOD, QTY });
+ //await cart.addToCart({ CART_ID, PRODUCT_ID, METHOD, QTY });
   //error, success
-  //req.flash('message', JSON.stringify({ type: 'error', text: 'Failed to add item to cart!' }));
+  req.flash('message', JSON.stringify({ type: 'error', text: 'Failed to add item to cart!' }));
   res.redirect(backURL);
 
  

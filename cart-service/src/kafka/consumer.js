@@ -19,7 +19,7 @@ const consumeMessage = async () => {
     });
 }
 const handleAddToCart = async (message) => {
-    console.log("data recevied")
+    // recevied")
     const data = JSON.parse(message.value.toString());
     await appservice.addToCart(data);
 }

@@ -6,7 +6,7 @@ const router = express.Router();
 
 const  Uiroutes=() =>{
 // router.get('/detail/:id', AppController.details);
-// router.get('/list', AppController.list);
+ router.post('/addToCart', AppController.addToCart);
 return router;
 }
 

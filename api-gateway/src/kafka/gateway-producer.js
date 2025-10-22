@@ -16,7 +16,7 @@ const sendDataToCart = async (CART_ID,PRODUCT_ID,METHOD,QTY) => {
       topic: process.env.CART_TOPIC,
       messages: [{value:JSON.stringify(CART_UPDATION_DATA),"key": METHOD}],
     });
-    console.log("data sent from producer")
+    //console.log("data sent from producer")
     await producer.disconnect();
 }
 export { sendDataToCart,kafka,connectKafaka };
