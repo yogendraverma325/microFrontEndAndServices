@@ -11,7 +11,23 @@ import { Uiroutes } from './src/api/routes/gateway.js';
 import { genericStore } from './src/api/service/generic.js';
 import http from "http";
 import { getSocketServer } from "./src/websocket/socketServer.js";
+///redis setup
+import redis from 'redis';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { RedisStore } = require('connect-redis'); // Correct for v6+ CommonJS
+const redisClient = redis.createClient({
+  socket: {
+    host: 'redis',
+    port: 6379,
+  },
+  password: undefined, // or set if you have password
+  database: 0,
+});
+redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
+await redisClient.connect();
+///redis setup
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.APP_PORT || 3000;
@@ -22,10 +38,11 @@ const initilize = () => {
 };
 
 const start = (app) => {
-  standardMiddleware(app);
-  securityMiddleware(app);
   dataMiddleware(app);
+
   configureProxy(app);
+  securityMiddleware(app);
+  standardMiddleware(app);
   routeMiddleware(app);
   startServer(app);
 };
@@ -36,14 +53,10 @@ const standardMiddleware = (app) => {
   app.set("views", path.join(__dirname, "src", "views"));
   app.set("view engine", "ejs");
   app.use(express.static(path.join(process.cwd(), '/src/public')));
-
-  // Important: body parsers (for form + JSON)
-  //app.use(express.urlencoded({ extended: true }));
-  app.use(express.json());
-
+  app.use(express.urlencoded({ extended: true }));
   // Cookies + flash messages
-  app.use(cookieParser());
-  app.use(flash());
+
+  
 };
 
 // ---------------- SECURITY MIDDLEWARE ----------------
@@ -54,23 +67,25 @@ const securityMiddleware = (app) => {
 // ---------------- DATA HANDLING MIDDLEWARE ----------------
 const dataMiddleware = (app) => {
   app.use(session({
-    secret: 'babyGammingZoneDev',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
+   store: new RedisStore({ client: redisClient }),
+  secret: 'sharedSecret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false, maxAge: 10 * 365 * 24 * 60 * 60 * 1000  } // 10 years
   }));
-
+  app.use(flash());
+  app.use(cookieParser());
   app.use(async (req, res, next) => {
+    let cart=null;
     // Store cart data globally (if exists)
     if (req.cookies?.userCart) {
-      genericStore.set("cart", 'UserCart', req.cookies.userCart);
+    cart= req.cookies.userCart;
     }
-
     // Attach flash + user info to locals (for EJS)
     res.locals.flashMessage = req.flash('message') || null;
     res.locals.user = null;
     res.locals.cartList = [];
-
+    res.locals.cart = cart;
     next();
   });
 };
@@ -79,21 +94,14 @@ const dataMiddleware = (app) => {
 const configureProxy = (app) => {
   const CART_URL = 'http://cart-service:4003';
 
-  app.use('/cart', createProxyMiddleware({
-    target: CART_URL,
+  app.use(
+  "/api/cart",
+  createProxyMiddleware({
+    target:CART_URL,
     changeOrigin: true,
-    pathRewrite: { '^/cart': '' },
-  onProxyReq: (proxyReq, req, res) => {
-    console.log("req.body",req.body)
-  if (req.body && Object.keys(req.body).length) {
-   const bodyData = JSON.stringify(req.body);
-proxyReq.setHeader('Content-Type', 'application/json');
-proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-proxyReq.write(bodyData);
-proxyReq.end();
-  }
-}
-  }));
+    pathRewrite: { "^/api/cart": "/cart/addToCart" },
+  })
+);
 };
 
 // ---------------- ROUTES ----------------
