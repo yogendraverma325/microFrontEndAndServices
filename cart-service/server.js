@@ -3,8 +3,7 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import "dotenv/config.js";
 import {connectionWithDB} from "./src/config/db.js";
-import {appUiroutes } from './src/api/routes/route.js';
-import {consumeDataSocket} from "./src/websocket/consumer.js";
+import {appUiroutes } from './src/api/routes/route.js';;
 import flash from 'connect-flash';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
@@ -41,8 +40,6 @@ const start = (app) => {
   dataMiddleware(app);
   standardMiddleware(app);
   routeMiddleware(app);
-  
-  startConsumeAndProducer();
   startServer(app);
 };
 
@@ -88,10 +85,6 @@ const startServer = (app) => {
   app.listen(PORT, () => {
     console.log(`✅ Cart Service running on http://localhost:${PORT}`);
   });
-};
-
-const startConsumeAndProducer = async () => {
-  consumeDataSocket();
 };
 
 initilize();

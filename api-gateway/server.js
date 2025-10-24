@@ -93,13 +93,21 @@ const dataMiddleware = (app) => {
 // ---------------- PROXY MIDDLEWARE ----------------
 const configureProxy = (app) => {
   const CART_URL = 'http://cart-service:4003';
-
+  const HOME_URL = 'http://cart-service:4001';
   app.use(
   "/api/cart",
   createProxyMiddleware({
     target:CART_URL,
     changeOrigin: true,
     pathRewrite: { "^/api/cart": "/cart/addToCart" },
+  })
+);
+ app.use(
+  "/api/home",
+  createProxyMiddleware({
+    target:HOME_URL,
+    changeOrigin: true,
+   pathRewrite: { "^/api/home": "" }
   })
 );
 };
